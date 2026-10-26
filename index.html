@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2026.7.3/core.css">
+
+    <script type="module" src="https://pyscript.net/releases/2026.7.3/core.js">
+    </script>
+
+    <title>Atlas | Country Capital Finder</title>
+
+    <style>
+        :root {
+            --navy: #102A43;
+            --teal: #087F8C;
+            --mint: #B7F7D4;
+            --background: #F3F7F8;
+            --white: #FFFFFF;
+            --text: #334E68;
+            --muted: #829AB1;
+            --border: #D9E2EC;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* Navigation bar */
+
+        .navbar {
+            padding: 18px 0;
+            background: var(--navy);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--mint);
+            color: var(--navy);
+            font-size: 25px;
+        }
+
+        .brand-name {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            color: #B7C9D8;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+        }
+
+        .nav-tag {
+            padding: 8px 13px;
+            border: 1px solid #36536B;
+            border-radius: 50px;
+            color: #D6E2EC;
+            font-size: 0.75rem;
+        }
+
+        /* Main area */
+
+        main {
+            flex: 1;
+            padding: 65px 18px 55px;
+        }
+
+        .hero {
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            border: 1px solid #B7EBD0;
+            border-radius: 50px;
+            background: #E1F8ED;
+            color: var(--teal);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .hero h1 {
+            margin-bottom: 18px;
+            color: var(--navy);
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.12;
+        }
+
+        .hero h1 span {
+            color: var(--teal);
+        }
+
+        .hero p {
+            max-width: 490px;
+            margin: 0 auto;
+            color: #627D98;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        /* Search panel */
+
+        .search-card {
+            max-width: 540px;
+            margin: 38px auto 0;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: var(--white);
+            box-shadow: 0 12px 35px rgba(16, 42, 67, 0.06);
+        }
+
+        .search-card h2 {
+            margin-bottom: 8px;
+            color: var(--navy);
+            font-size: 1.25rem;
+            font-weight: 750;
+        }
+
+        .search-description {
+            margin-bottom: 23px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        #input1 {
+            min-width: 0;
+            height: 52px;
+            padding: 0 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #FAFCFD;
+            color: var(--navy);
+            box-shadow: none;
+        }
+
+        #input1::placeholder {
+            color: #829AB1;
+        }
+
+        #input1:focus {
+            border-color: var(--teal);
+            outline: 3px solid rgba(8, 127, 140, 0.12);
+        }
+
+        .search-btn {
+            min-width: 115px;
+            height: 52px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 12px;
+            background: var(--teal);
+            color: white;
+            font-weight: 700;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #066773;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .search-btn:focus-visible {
+            outline: 3px solid var(--mint);
+            outline-offset: 3px;
+        }
+
+        .search-hint {
+            margin-top: 14px;
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .search-hint span {
+            color: var(--teal);
+        }
+
+        /* Supported countries */
+
+        .country-section {
+            max-width: 540px;
+            margin: 30px auto 0;
+        }
+
+        .section-label {
+            margin-bottom: 14px;
+            color: var(--navy);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+        }
+
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .country-item {
+            padding: 14px 8px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: white;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .country-item:hover {
+            border-color: #86D9B2;
+            transform: translateY(-2px);
+        }
+
+        .country-flag {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 1.5rem;
+        }
+
+        .country-name {
+            color: var(--text);
+            font-size: 0.8rem;
+            font-weight: 650;
+        }
+
+        /* Python output */
+
+        #output {
+            max-width: 540px;
+            margin: 24px auto 0;
+            overflow-wrap: anywhere;
+        }
+
+        #output:empty {
+            display: none;
+        }
+
+        #output:not(:empty) {
+            padding: 22px 24px;
+            border: 1px solid #B7EBD0;
+            border-radius: 17px;
+            background: #E1F8ED;
+            color: var(--navy);
+            font-size: 1rem;
+            line-height: 1.8;
+            box-shadow: 0 8px 22px rgba(16, 42, 67, 0.04);
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 23px 16px;
+            border-top: 1px solid var(--border);
+            background: #EAF0F3;
+            text-align: center;
+            color: #627D98;
+            font-size: 0.8rem;
+        }
+
+        footer span {
+            color: var(--teal);
+            font-weight: 750;
+        }
+
+        /* Mobile layout */
+
+        @media (max-width: 480px) {
+            main {
+                padding: 45px 16px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1px;
+            }
+
+            .search-card {
+                padding: 23px 18px;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .country-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-tag {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+
+                <a href="#" class="brand">
+                    <div class="brand-icon">◎</div>
+
+                    <div>
+                        <div class="brand-name">Atlas</div>
+                        <div class="brand-subtitle">
+                            COUNTRY CAPITAL FINDER
+                        </div>
+                    </div>
+                </a>
+
+                <div class="nav-tag">
+                    ✦ Explore the world
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="hero">
+            <div class="eyebrow">
+                DISCOVER THE WORLD
+            </div>
+
+            <h1>
+                Where will<br>
+                you <span>go?</span>
+            </h1>
+
+            <p>
+                Find the capital city of a country with one
+                simple search. Explore the world, one country
+                at a time.
+            </p>
+        </section>
+
+        <section class="search-card">
+
+            <h2>Country search</h2>
+
+            <p class="search-description">
+                Enter a country name to find its capital.
+            </p>
+
+            <form onsubmit="return false;">
+                <div class="search-row">
+
+                    <input
+                        type="text"
+                        id="input1"
+                        class="form-control"
+                        placeholder="Enter a country..."
+                        aria-label="Enter a country"
+                        autocomplete="off"
+                    >
+
+                    <input
+                        type="button"
+                        py-click="countries_capital"
+                        class="btn search-btn"
+                        value="Search"
+                    >
+
+                </div>
+            </form>
+
+            <p class="search-hint">
+                <span>✦</span>
+                Try Madagascar, Mongolia, Egypt, Philippines,
+                Denmark, or Chile.
+            </p>
+
+        </section>
+
+        <section class="country-section">
+
+            <div class="section-label">
+                COUNTRIES YOU CAN SEARCH
+            </div>
+
+            <div class="country-grid">
+
+                <div class="country-item">
+                    <span class="country-flag">🇲🇬</span>
+                    <span class="country-name">Madagascar</span>
+                </div>
+
+                <div class="country-item">
+                    <span class="country-flag">🇲🇳</span>
+                    <span class="country-name">Mongolia</span>
+                </div>
+
+                <div class="country-item">
+                    <span class="country-flag">🇪🇬</span>
+                    <span class="country-name">Egypt</span>
+                </div>
+
+                <div class="country-item">
+                    <span class="country-flag">🇵🇭</span>
+                    <span class="country-name">Philippines</span>
+                </div>
+
+                <div class="country-item">
+                    <span class="country-flag">🇩🇰</span>
+                    <span class="country-name">Denmark</span>
+                </div>
+
+                <div class="country-item">
+                    <span class="country-flag">🇨🇱</span>
+                    <span class="country-name">Chile</span>
+                </div>
+
+            </div>
+        </section>
+
+        <div id="output" aria-live="polite"></div>
+
+    </main>
+
+    <footer>
+        Atlas <span>·</span> Made for curious minds.
+    </footer>
+
+    <py-script src="main.py"></py-script>
+
+</body>
+</html>
